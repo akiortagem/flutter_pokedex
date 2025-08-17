@@ -1,0 +1,20 @@
+enum PKMNTypes {
+  normal,
+  fire,
+  water,
+  grass,
+  electric,
+  psychic,
+  dragon,
+  ice,
+  fairy,
+  fighting,
+  ghost,
+  poison,
+  bug,
+  dark,
+  steel,
+  ground,
+  flying,
+  rock
+}
