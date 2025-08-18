@@ -1,5 +1,6 @@
 import 'package:flutter_pokedex/src/features/pokemon_detail/model/pokemon_detail_about_model.dart';
 import 'package:flutter_pokedex/src/features/pokemon_detail/model/pokemon_detail_base_stats_model.dart';
+import 'package:flutter_pokedex/src/features/pokemon_detail/model/pokemon_detail_moves_model.dart';
 import 'package:flutter_pokedex/src/shared/enums/pkmn_types.dart';
 
 class PokemonDetailPageModel {
@@ -10,6 +11,7 @@ class PokemonDetailPageModel {
     this.pkmnArtUrl,
     this.pkmnAbout,
     this.pkmnBaseStats,
+    this.pkmnMoves,
   });
 
   final List<PKMNTypes>? pkmnTypes;
@@ -18,4 +20,5 @@ class PokemonDetailPageModel {
   final String? pkmnArtUrl;
   final PokemonDetailAboutModel? pkmnAbout;
   final PokemonDetailBaseStatsModel? pkmnBaseStats;
+  final List<PKMNMoveModel>? pkmnMoves;
 }

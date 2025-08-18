@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pokedex/src/features/pokemon_detail/model/pokemon_detail_page_model.dart';
 import 'package:flutter_pokedex/src/features/pokemon_detail/view/widgets/pkmn_detail_about_tab.dart';
 import 'package:flutter_pokedex/src/features/pokemon_detail/view/widgets/pkmn_detail_base_stats_tab.dart';
+import 'package:flutter_pokedex/src/features/pokemon_detail/view/widgets/pkmn_detail_evo_tab.dart';
+import 'package:flutter_pokedex/src/features/pokemon_detail/view/widgets/pkmn_detail_moves_tab.dart';
 import 'package:flutter_pokedex/src/features/pokemon_detail/view/widgets/pkmn_detail_no_data_tab.dart';
 import 'package:flutter_pokedex/src/shared/themes/pkmn_text.dart';
 
@@ -69,8 +71,14 @@ class PKMNDetailTabs extends StatelessWidget {
                     ? PKMNDetailBaseStatsTab(
                         pkmnBaseStats: pkmnDetails!.pkmnBaseStats!)
                     : const PKMNDetailNoDataTab(), // Base Stats
-                const PKMNDetailNoDataTab(), // Evolution
-                const PKMNDetailNoDataTab(), // Moves
+                pkmnDetails != null
+                    ? PKMNDetailEvoTab(pkmnDetails: pkmnDetails!)
+                    : const PKMNDetailNoDataTab(), // Evolution
+                pkmnDetails?.pkmnMoves != null
+                    ? PKMNDetailMovesTab(
+                        pkmnMoves: pkmnDetails!.pkmnMoves!,
+                      )
+                    : const PKMNDetailNoDataTab(), // Moves
               ],
             ),
           ),
