@@ -16,5 +16,6 @@ enum PKMNTypes {
   steel,
   ground,
   flying,
-  rock
+  rock,
+  unknown
 }
