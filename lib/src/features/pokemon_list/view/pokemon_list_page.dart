@@ -17,29 +17,53 @@ class PokemonListPage extends StatefulWidget {
 
 class _PokemonListPageState extends State<PokemonListPage> {
   late PKMNListViewModel listViewModel;
+  final _scroll = ScrollController();
 
   @override
   void initState() {
+    super.initState();
+
     listViewModel = PKMNListViewModel(
       initial: const PKMNListState(),
-      ds: PKMNListPokeAPIDataSource(
-        apiClient: PokeApiClient(),
-      ),
+      ds: PKMNListPokeAPIDataSource(apiClient: PokeApiClient()),
     );
+
     listViewModel.addListener(() => setState(() {}));
     listViewModel.loadInit();
-    super.initState();
+
+    _scroll.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    // Trigger when we're within ~300px of the bottom
+    if (_scroll.position.pixels >= _scroll.position.maxScrollExtent - 300) {
+      listViewModel.loadMore();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scroll.removeListener(_onScroll);
+    _scroll.dispose();
+    listViewModel.dispose();
+    super.dispose();
+  }
+
+  int _itemCount() {
+    if (listViewModel.state.isLoading) return 20; // initial skeletons
+    final base = (listViewModel.state.pkmnList ?? []).length;
+    final extra = listViewModel.state.isLoadingMore ? 1 : 0; // loader tile
+    return base + extra;
+  }
+
+  bool _isLoaderTile(int index) {
+    if (listViewModel.state.isLoading) return false;
+    final len = (listViewModel.state.pkmnList ?? []).length;
+    return listViewModel.state.isLoadingMore && index == len;
   }
 
   @override
   Widget build(BuildContext context) {
-    int getItemLength() {
-      if (listViewModel.state.isLoading) {
-        return 20;
-      }
-      return (listViewModel.state.pkmnList ?? []).length;
-    }
-
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -47,24 +71,15 @@ class _PokemonListPageState extends State<PokemonListPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Pokedex',
-                style: PKMNText.title,
-              ),
-              const SizedBox(
-                height: 24,
-              ),
+              Text('Pokedex', style: PKMNText.title),
+              const SizedBox(height: 24),
               if (listViewModel.state.isError)
                 Expanded(
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          'ERROR',
-                          style: PKMNText.title,
-                        ),
+                        Text('ERROR', style: PKMNText.title),
                         Text(
                           'Please contact Prof. Oak for support',
                           style: PKMNText.bodyText1.small.italic.textSecondary,
@@ -76,34 +91,45 @@ class _PokemonListPageState extends State<PokemonListPage> {
                 ),
               if (!listViewModel.state.isError)
                 Expanded(
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // 2 columns
-                      crossAxisSpacing: 8, // space between columns
-                      mainAxisSpacing: 8, // space between rows
-                      childAspectRatio: 3 / 2,
-                      mainAxisExtent: 130,
-                    ),
-                    padding: const EdgeInsets.all(8),
-                    itemCount: getItemLength(), // number of items
-                    itemBuilder: (context, index) {
-                      if (listViewModel.state.isLoading) {
-                        return const PokemonListCardLoading();
-                      }
-
-                      final data = listViewModel.state.pkmnList![index];
-                      return PokemonListCard(
-                        onTap: () {
-                          Navigator.of(context).pushNamed(
-                            PokemonDetailPage.routeOf(
-                              data.name ?? '',
-                            ),
-                          );
-                        },
-                        data: data,
-                      );
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await listViewModel.refresh();
                     },
+                    child: GridView.builder(
+                      controller: _scroll,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 8,
+                        childAspectRatio: 3 / 2,
+                        mainAxisExtent: 130,
+                      ),
+                      padding: const EdgeInsets.all(8),
+                      itemCount: _itemCount(),
+                      itemBuilder: (context, index) {
+                        // Initial page skeletons
+                        if (listViewModel.state.isLoading) {
+                          return const PokemonListCardLoading();
+                        }
+
+                        // The loader tile at the end during pagination
+                        if (_isLoaderTile(index)) {
+                          return const PokemonListCardLoading();
+                        }
+
+                        // Normal items
+                        final data = listViewModel.state.pkmnList![index];
+                        return PokemonListCard(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                              PokemonDetailPage.routeOf(data.name ?? ''),
+                            );
+                          },
+                          data: data,
+                        );
+                      },
+                    ),
                   ),
                 ),
             ],

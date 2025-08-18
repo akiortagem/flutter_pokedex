@@ -10,6 +10,7 @@ import 'package:flutter_pokedex/src/shared/themes/pkmn_text.dart';
 import 'package:flutter_pokedex/src/shared/utils.dart';
 import 'package:flutter_svg/svg.dart';
 
+// This doesn't cover Eeveelutions and Applins yet. . .
 class PKMNDetailEvoTab extends StatefulWidget {
   const PKMNDetailEvoTab({
     super.key,

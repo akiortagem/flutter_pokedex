@@ -21,9 +21,12 @@ class PKMNTypePill extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-        child: Text(
-          pkmnType.name.toUpperCase(),
-          style: PKMNText.bodyText1,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            pkmnType.name.toUpperCase(),
+            style: PKMNText.bodyText1,
+          ),
         ),
       ),
     );

@@ -6,12 +6,14 @@ class PKMNListState {
   const PKMNListState({
     this.isLoading = false,
     this.isError = false,
+    this.isLoadingMore = false,
     this.pkmnList,
   });
 
   final bool isLoading;
   final bool isError;
   final List<PokemonListCardModel>? pkmnList;
+  final bool isLoadingMore;
 }
 
 class PKMNListViewModel extends ChangeNotifier {
@@ -50,5 +52,41 @@ class PKMNListViewModel extends ChangeNotifier {
       pkmnList: data,
     );
     notifyListeners();
+  }
+
+  Future<void> loadMore() async {
+    final currentCount = _state.pkmnList?.length ?? 0;
+    final before = state.pkmnList;
+    _state = PKMNListState(
+      isLoadingMore: true,
+      pkmnList: _state.pkmnList,
+    );
+    notifyListeners();
+
+    late List<PokemonListCardModel> data;
+
+    try {
+      data = await ds.getPokemonList(
+        offset: currentCount + 1,
+        limit: 20,
+      );
+    } catch (_) {
+      _state = const PKMNListState(
+        isLoadingMore: false,
+        isError: true,
+      );
+      notifyListeners();
+      return;
+    }
+
+    _state = PKMNListState(
+      isLoadingMore: false,
+      pkmnList: [...before!, ...data],
+    );
+    notifyListeners();
+  }
+
+  Future<void> refresh() async {
+    loadInit();
   }
 }
