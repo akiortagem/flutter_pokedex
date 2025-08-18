@@ -64,4 +64,6 @@ class PKMNColors {
   // Utility
   static const Color divider = Color(0xFFBDBDBD);
   static const Color shadow = Color(0x29000000); // 16% black
+  static const Color skeletonBg = Color(0xFFD3D3D3);
+  static const Color skeletonFg = Color(0xFFF5F5F5);
 }

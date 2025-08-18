@@ -92,3 +92,16 @@ extension PKMNTypeColor on PKMNTypes {
   Color get fgColor => pkmnType2FgColor(this);
   Color get bgColor => pkmnType2BgColor(this);
 }
+
+extension Capitalise on String {
+  String get capitalise {
+    return [this[0].toUpperCase(), ...split('').skip(1)].join();
+  }
+
+  String get dashToCapitalized {
+    return split('-')
+        .map((word) =>
+            word.isEmpty ? '' : word[0].toUpperCase() + word.substring(1))
+        .join(' ');
+  }
+}

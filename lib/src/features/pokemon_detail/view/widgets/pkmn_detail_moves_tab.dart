@@ -3,6 +3,7 @@ import 'package:flutter_pokedex/src/features/pokemon_detail/model/pokemon_detail
 import 'package:flutter_pokedex/src/features/pokemon_detail/view_model/pkmn_moves_filter_view_model.dart';
 import 'package:flutter_pokedex/src/shared/themes/pkmn_color_theme.dart';
 import 'package:flutter_pokedex/src/shared/themes/pkmn_text.dart';
+import 'package:flutter_pokedex/src/shared/utils.dart';
 
 class PKMNDetailMovesTab extends StatefulWidget {
   const PKMNDetailMovesTab({
@@ -116,7 +117,7 @@ class _PKMNMoveBox extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-          name,
+          name.dashToCapitalized,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: PKMNText.subtitle.small,

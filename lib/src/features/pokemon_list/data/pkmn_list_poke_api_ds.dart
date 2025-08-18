@@ -19,57 +19,14 @@ class PKMNListPokeAPIDataSource implements PKMNListDataSource {
     return int.tryParse(match.group(1)!);
   }
 
-  PKMNTypes? _mapTypeNameToEnum(String name) {
-    switch (name) {
-      case 'normal':
-        return PKMNTypes.normal;
-      case 'fire':
-        return PKMNTypes.fire;
-      case 'water':
-        return PKMNTypes.water;
-      case 'electric':
-        return PKMNTypes.electric;
-      case 'grass':
-        return PKMNTypes.grass;
-      case 'ice':
-        return PKMNTypes.ice;
-      case 'fighting':
-        return PKMNTypes.fighting;
-      case 'poison':
-        return PKMNTypes.poison;
-      case 'ground':
-        return PKMNTypes.ground;
-      case 'flying':
-        return PKMNTypes.flying;
-      case 'psychic':
-        return PKMNTypes.psychic;
-      case 'bug':
-        return PKMNTypes.bug;
-      case 'rock':
-        return PKMNTypes.rock;
-      case 'ghost':
-        return PKMNTypes.ghost;
-      case 'dragon':
-        return PKMNTypes.dragon;
-      case 'dark':
-        return PKMNTypes.dark;
-      case 'steel':
-        return PKMNTypes.steel;
-      case 'fairy':
-        return PKMNTypes.fairy;
-      default:
-        return PKMNTypes.unknown;
-    }
-  }
-
   @override
   Future<List<PokemonListCardModel>> getPokemonList({
     int? offset,
     int? limit,
   }) async {
-    final response = apiClient.get('/pokemon', query: {
+    final response = await apiClient.get('/pokemon', query: {
       'offset': (offset ?? 0).toString(),
-      'limit': (limit ?? 0).toString(),
+      'limit': (limit ?? 20).toString(),
     });
     final List<dynamic> results =
         (response as Map<String, dynamic>)['results'] as List<dynamic>;
@@ -89,8 +46,7 @@ class PKMNListPokeAPIDataSource implements PKMNListDataSource {
         final List<dynamic> typesJson = (detail['types'] as List?) ?? const [];
         final List<PKMNTypes> types = typesJson
             .map((t) => (t['type']?['name'] as String?) ?? '')
-            .map(_mapTypeNameToEnum)
-            .where((t) => t != null)
+            .map(mapTypeNameToEnum)
             .cast<PKMNTypes>()
             .toList();
 

@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pokedex/src/core/services/poke_api_client.dart';
 import 'package:flutter_pokedex/src/features/pokemon_detail/view/pokemon_detail_page.dart';
 import 'package:flutter_pokedex/src/features/pokemon_list/data/pkmn_list_poke_api_ds.dart';
-import 'package:flutter_pokedex/src/features/pokemon_list/model/pokemon_list_card_model.dart';
 import 'package:flutter_pokedex/src/features/pokemon_list/view/widgets/pokemon_list_card.dart';
 import 'package:flutter_pokedex/src/features/pokemon_list/view_model/pkmn_list_view_model.dart';
-import 'package:flutter_pokedex/src/shared/enums/pkmn_types.dart';
 import 'package:flutter_pokedex/src/shared/themes/pkmn_text.dart';
 
 class PokemonListPage extends StatefulWidget {
@@ -56,9 +54,27 @@ class _PokemonListPageState extends State<PokemonListPage> {
               const SizedBox(
                 height: 24,
               ),
-              if (!listViewModel.state.isLoading &&
-                  listViewModel.state.pkmnList != null &&
-                  listViewModel.state.pkmnList!.isNotEmpty)
+              if (listViewModel.state.isError)
+                Expanded(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'ERROR',
+                          style: PKMNText.title,
+                        ),
+                        Text(
+                          'Please contact Prof. Oak for support',
+                          style: PKMNText.bodyText1.small.italic.textSecondary,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              if (!listViewModel.state.isError)
                 Expanded(
                   child: GridView.builder(
                     gridDelegate:
@@ -72,23 +88,20 @@ class _PokemonListPageState extends State<PokemonListPage> {
                     padding: const EdgeInsets.all(8),
                     itemCount: getItemLength(), // number of items
                     itemBuilder: (context, index) {
+                      if (listViewModel.state.isLoading) {
+                        return const PokemonListCardLoading();
+                      }
+
                       final data = listViewModel.state.pkmnList![index];
                       return PokemonListCard(
                         onTap: () {
                           Navigator.of(context).pushNamed(
-                            PokemonDetailPage.routeOf('charizard'),
+                            PokemonDetailPage.routeOf(
+                              data.name ?? '',
+                            ),
                           );
                         },
                         data: data,
-                        // data: const PokemonListCardModel(
-                        //   name: 'Charizard',
-                        //   pkmnTypes: [
-                        //     PKMNTypes.fire,
-                        //     PKMNTypes.dragon,
-                        //   ],
-                        //   imageUrl:
-                        //       'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png',
-                        // ),
                       );
                     },
                   ),

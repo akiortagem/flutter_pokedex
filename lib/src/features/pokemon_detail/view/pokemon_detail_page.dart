@@ -1,112 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pokedex/src/core/routing/path_pattern.dart';
-import 'package:flutter_pokedex/src/features/pokemon_detail/model/pokemon_detail_about_model.dart';
-import 'package:flutter_pokedex/src/features/pokemon_detail/model/pokemon_detail_base_stats_model.dart';
-import 'package:flutter_pokedex/src/features/pokemon_detail/model/pokemon_detail_moves_model.dart';
-import 'package:flutter_pokedex/src/features/pokemon_detail/model/pokemon_detail_page_model.dart';
+import 'package:flutter_pokedex/src/core/services/poke_api_client.dart';
+import 'package:flutter_pokedex/src/features/pokemon_detail/data/pkmn_details_poke_api_ds.dart';
+import 'package:flutter_pokedex/src/features/pokemon_detail/view/widgets/pkmn_detail_error.dart';
+import 'package:flutter_pokedex/src/features/pokemon_detail/view/widgets/pkmn_detail_loading.dart';
 import 'package:flutter_pokedex/src/features/pokemon_detail/view/widgets/pkmn_detail_tabs.dart';
+import 'package:flutter_pokedex/src/features/pokemon_detail/view_model/pkmn_details_view_model.dart';
 import 'package:flutter_pokedex/src/shared/enums/pkmn_types.dart';
 import 'package:flutter_pokedex/src/shared/themes/pkmn_color_theme.dart';
 import 'package:flutter_pokedex/src/shared/themes/pkmn_text.dart';
 import 'package:flutter_pokedex/src/shared/utils.dart';
 import 'package:flutter_pokedex/src/shared/widgets/pkmn_type_pill.dart';
-
-// Slicing purpose
-const data = PokemonDetailPageModel(
-    pkmnId: 123,
-    pkmnName: 'Charizard',
-    pkmnTypes: [
-      PKMNTypes.flying,
-      PKMNTypes.dark,
-    ],
-    pkmnArtUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/'
-        'sprites/pokemon/other/official-artwork/132.png',
-    pkmnAbout: PokemonDetailAboutModel(
-      species: 'Seed',
-      height: '2\'3.6" (0.70 cm)',
-      weight: '15.2 lbs (6.9 kg)',
-      abilities: 'Overgrow, Chlorophyl',
-    ),
-    pkmnBaseStats: PokemonDetailBaseStatsModel(
-      hp: 42,
-      attack: 60,
-      defense: 15,
-      spAtk: 78,
-      spDef: 90,
-      speed: 100,
-    ),
-    pkmnMoves: [
-      PKMNMoveModel(
-        name: 'Scratch',
-        moveId: '1',
-        learnMethod: PKMNMoveLearnMethod.levelUp,
-      ),
-      PKMNMoveModel(
-        name: 'Extrasensory',
-        moveId: '1',
-        learnMethod: PKMNMoveLearnMethod.levelUp,
-      ),
-      PKMNMoveModel(
-        name: 'Scratch',
-        moveId: '1',
-        learnMethod: PKMNMoveLearnMethod.levelUp,
-      ),
-      PKMNMoveModel(
-        name: 'Catasthropika',
-        moveId: '1',
-        learnMethod: PKMNMoveLearnMethod.levelUp,
-      ),
-      PKMNMoveModel(
-        name: 'Synchronoise',
-        moveId: '1',
-        learnMethod: PKMNMoveLearnMethod.levelUp,
-      ),
-      PKMNMoveModel(
-        name: 'Ember',
-        moveId: '1',
-        learnMethod: PKMNMoveLearnMethod.levelUp,
-      ),
-      PKMNMoveModel(
-        name: 'Scratch',
-        moveId: '1',
-        learnMethod: PKMNMoveLearnMethod.levelUp,
-      ),
-      PKMNMoveModel(
-        name: 'Ember',
-        moveId: '1',
-        learnMethod: PKMNMoveLearnMethod.levelUp,
-      ),
-      PKMNMoveModel(
-        name: 'Scratch',
-        moveId: '1',
-        learnMethod: PKMNMoveLearnMethod.levelUp,
-      ),
-      PKMNMoveModel(
-        name: 'Ember',
-        moveId: '1',
-        learnMethod: PKMNMoveLearnMethod.levelUp,
-      ),
-      PKMNMoveModel(
-        name: 'Scratch',
-        moveId: '1',
-        learnMethod: PKMNMoveLearnMethod.levelUp,
-      ),
-      PKMNMoveModel(
-        name: 'Ember',
-        moveId: '1',
-        learnMethod: PKMNMoveLearnMethod.levelUp,
-      ),
-      PKMNMoveModel(
-        name: 'Scratch',
-        moveId: '1',
-        learnMethod: PKMNMoveLearnMethod.levelUp,
-      ),
-      PKMNMoveModel(
-        name: 'Ember',
-        moveId: '1',
-        learnMethod: PKMNMoveLearnMethod.levelUp,
-      ),
-    ]);
 
 class PokemonDetailPage extends StatefulWidget {
   const PokemonDetailPage({
@@ -129,8 +33,29 @@ class PokemonDetailPage extends StatefulWidget {
 }
 
 class _PokemonDetailPageState extends State<PokemonDetailPage> {
+  late PKMNDetailsViewModel detailsViewModel;
+
+  @override
+  void initState() {
+    detailsViewModel = PKMNDetailsViewModel(
+      initial: const PKMNDetailsState(),
+      ds: PKMNDetailsPokeAPIDataSource(apiClient: PokeApiClient()),
+    );
+    detailsViewModel.loadInitial(widget.pokemonName);
+    detailsViewModel.addListener(() => setState(() {}));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (detailsViewModel.state.isError) {
+      return const PKMNErrorDetail();
+    }
+    if (detailsViewModel.state.isLoading) {
+      return const PKMNDetailLoading();
+    }
+
+    final data = detailsViewModel.state.data!;
     return Scaffold(
       backgroundColor:
           ((data.pkmnTypes ?? []).firstOrNull ?? PKMNTypes.normal).bgColor,
@@ -150,7 +75,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          data.pkmnName ?? 'Unknown',
+                          (data.pkmnName ?? 'Unknown').capitalise,
                           style: PKMNText.title.textLight,
                         ),
                         const SizedBox(

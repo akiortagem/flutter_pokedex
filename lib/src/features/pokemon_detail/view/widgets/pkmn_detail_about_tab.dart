@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pokedex/src/features/pokemon_detail/model/pokemon_detail_about_model.dart';
 import 'package:flutter_pokedex/src/shared/themes/pkmn_text.dart';
+import 'package:flutter_pokedex/src/shared/utils.dart';
 
 class PKMNDetailAboutTab extends StatelessWidget {
   const PKMNDetailAboutTab({
@@ -20,7 +21,7 @@ class PKMNDetailAboutTab extends StatelessWidget {
         children: [
           _PKMNStringDataEntry(
             label: 'Species',
-            data: pkmnAboutData.species ?? 'NO DATA',
+            data: (pkmnAboutData.species ?? 'NO DATA').capitalise,
           ),
           const SizedBox(height: 16),
           _PKMNStringDataEntry(
@@ -35,7 +36,12 @@ class PKMNDetailAboutTab extends StatelessWidget {
           const SizedBox(height: 16),
           _PKMNStringDataEntry(
             label: 'Abilities',
-            data: pkmnAboutData.abilities ?? 'NO DATA',
+            data: pkmnAboutData.abilities == null
+                ? 'NO DATA'
+                : pkmnAboutData.abilities!
+                    .split(', ')
+                    .map((a) => a.dashToCapitalized)
+                    .join(', '),
           ),
         ],
       ),

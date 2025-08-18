@@ -5,10 +5,12 @@ import 'package:flutter_pokedex/src/features/pokemon_list/model/pokemon_list_car
 class PKMNListState {
   const PKMNListState({
     this.isLoading = false,
+    this.isError = false,
     this.pkmnList,
   });
 
   final bool isLoading;
+  final bool isError;
   final List<PokemonListCardModel>? pkmnList;
 }
 
@@ -30,11 +32,23 @@ class PKMNListViewModel extends ChangeNotifier {
     );
     notifyListeners();
 
-    final data = await ds.getPokemonList();
+    late List<PokemonListCardModel> data;
+
+    try {
+      data = await ds.getPokemonList();
+    } catch (_) {
+      _state = const PKMNListState(
+        isLoading: false,
+        isError: true,
+      );
+      notifyListeners();
+      return;
+    }
 
     _state = PKMNListState(
       isLoading: false,
       pkmnList: data,
     );
+    notifyListeners();
   }
 }

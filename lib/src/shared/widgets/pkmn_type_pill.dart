@@ -20,10 +20,10 @@ class PKMNTypePill extends StatelessWidget {
         borderRadius: BorderRadius.circular(50),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+        padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
         child: Text(
-          pkmnType.name,
-          style: PKMNText.bodyText1.textLight,
+          pkmnType.name.toUpperCase(),
+          style: PKMNText.bodyText1,
         ),
       ),
     );

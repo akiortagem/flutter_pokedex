@@ -3,7 +3,7 @@ import 'dart:io';
 
 class PokeApiClient {
   PokeApiClient({
-    this.baseUrl = 'https://pokeapi.co/api/v2/',
+    this.baseUrl = 'https://pokeapi.co/api/v2',
   });
 
   final String baseUrl;
@@ -11,8 +11,7 @@ class PokeApiClient {
 
   // For now just wraps GET
   Future<dynamic> get(String path, {Map<String, String>? query}) async {
-    final uri =
-        Uri.parse(baseUrl).resolve(path).replace(queryParameters: query);
+    final uri = Uri.parse('$baseUrl$path').replace(queryParameters: query);
     final request = await _client.getUrl(uri);
     final response = await request.close();
 
