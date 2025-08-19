@@ -108,13 +108,15 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
               ),
               if (data.pkmnArtUrl != null)
                 Center(
-                  child: Image.network(data.pkmnArtUrl!, height: 200,
-                      loadingBuilder: (context, child, loadingProgress) {
+                  child:
+                      Image.network(data.pkmnArtUrl!, height: 200, width: 200,
+                          loadingBuilder: (context, child, loadingProgress) {
                     if (loadingProgress == null) {
                       return child;
                     }
                     return SizedBox(
                       height: 200,
+                      width: 200,
                       child: CircularProgressIndicator(
                         color: ((data.pkmnTypes ?? []).firstOrNull ??
                                 PKMNTypes.normal)

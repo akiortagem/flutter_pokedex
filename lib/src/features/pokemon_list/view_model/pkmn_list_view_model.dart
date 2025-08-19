@@ -55,6 +55,11 @@ class PKMNListViewModel extends ChangeNotifier {
   }
 
   Future<void> loadMore() async {
+    // do not load more while loading more
+    if (_state.isLoadingMore) {
+      return;
+    }
+
     final currentCount = _state.pkmnList?.length ?? 0;
     final before = state.pkmnList;
     _state = PKMNListState(
