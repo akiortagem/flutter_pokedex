@@ -4,6 +4,7 @@ import 'package:flutter_pokedex/src/features/pokemon_detail/view/pokemon_detail_
 import 'package:flutter_pokedex/src/features/pokemon_list/data/pkmn_list_poke_api_ds.dart';
 import 'package:flutter_pokedex/src/features/pokemon_list/view/widgets/pokemon_list_card.dart';
 import 'package:flutter_pokedex/src/features/pokemon_list/view_model/pkmn_list_view_model.dart';
+import 'package:flutter_pokedex/src/shared/themes/pkmn_color_theme.dart';
 import 'package:flutter_pokedex/src/shared/themes/pkmn_text.dart';
 
 class PokemonListPage extends StatefulWidget {
@@ -18,6 +19,8 @@ class PokemonListPage extends StatefulWidget {
 class _PokemonListPageState extends State<PokemonListPage> {
   late PKMNListViewModel listViewModel;
   final _scroll = ScrollController();
+
+  final TextEditingController goPokemonTextContrl = TextEditingController();
 
   @override
   void initState() {
@@ -62,6 +65,13 @@ class _PokemonListPageState extends State<PokemonListPage> {
     return listViewModel.state.isLoadingMore && index == len;
   }
 
+  void jumpToPokemon(String input) {
+    final pkmnName = input.trim().toLowerCase();
+    Navigator.of(context).pushNamed(
+      PokemonDetailPage.routeOf(pkmnName),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,6 +83,57 @@ class _PokemonListPageState extends State<PokemonListPage> {
             children: [
               Text('Pokedex', style: PKMNText.title),
               const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Row(
+                  children: [
+                    // Input field
+                    Expanded(
+                      child: TextField(
+                        controller: goPokemonTextContrl,
+                        onSubmitted: (value) {
+                          if (value.isNotEmpty) {
+                            jumpToPokemon(value);
+                          }
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Enter Pokémon name...',
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 16,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 8),
+
+                    // Go button
+                    ElevatedButton(
+                      onPressed: () {
+                        if (goPokemonTextContrl.text.isNotEmpty) {
+                          jumpToPokemon(goPokemonTextContrl.text);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          backgroundColor: PKMNColors.pokedexGreen,
+                          foregroundColor: PKMNColors.typeGrassFg),
+                      child: Text(
+                        'GO',
+                        style: PKMNText.subtitle,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               if (listViewModel.state.isError)
                 Expanded(
                   child: Center(

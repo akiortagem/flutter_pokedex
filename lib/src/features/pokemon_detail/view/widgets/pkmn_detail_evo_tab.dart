@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_pokedex/src/core/services/poke_api_client.dart';
 import 'package:flutter_pokedex/src/features/pokemon_detail/data/pkmn_details_poke_api_ds.dart';
 import 'package:flutter_pokedex/src/features/pokemon_detail/model/pokemon_detail_page_model.dart';
@@ -67,12 +68,16 @@ class _PKMNDetailEvoTabState extends State<PKMNDetailEvoTab> {
     final data = evoViewModel.state.data;
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: Center(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:
-              !evoViewModel.state.isLoading && evoViewModel.state.data != null
+      child: SizedBox(
+        width: 500,
+        child: Center(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: !evoViewModel.state.isLoading &&
+                      evoViewModel.state.data != null
                   ? [
                       for (int i = 0; i < data!.length; i++) ...[
                         _PKMNEvoPic(
@@ -100,6 +105,8 @@ class _PKMNDetailEvoTabState extends State<PKMNDetailEvoTab> {
                       ),
                       const PKMNEvoPicSkeleton()
                     ],
+            ),
+          ),
         ),
       ),
     );
