@@ -1,29 +1,87 @@
-# flutter_pokedex
+# Flutter Pokédex
 
-A new Flutter project.
+A simple Pokédex app built with **Flutter** that fetches data from **[PokeAPI](https://pokeapi.co/)**. It supports Pokémon listing, jumping directly to a Pokémon by name, and viewing per-Pokémon details (types, stats, and evolution info).
+
+---
+
+## Features
+
+- **Flutter app** targeting mobile (Android/iOS).
+- **PokeAPI integration** for live Pokémon data.
+- **Pokémon listing** with basic info and artwork.
+- **Jump to Pokémon by name**: type a name and go straight to its page.
+- **Pokémon detail view**: types, base stats, and forward evolution steps.
+
+---
+
+## Data Source
+
+All data is retrieved from **PokeAPI**:
+- `pokemon/` – core per-Pokémon data (stats, types, sprites).
+- `pokemon-species/` – species metadata and evolution chain pointer.
+- `evolution-chain/` – evolution chain structure.
+
+> Credit: PokeAPI (https://pokeapi.co/)
+
+---
+
+## Known Limitations
+
+- **Eeveelutions not handled**: the UI may display them as a single long chain (branching not yet rendered).
+- **Forward-only evolutions**: evolutions are shown from the **current Pokémon to the next one(s)** and **do not** include prior forms in the chain.
+
+---
+
+## Project Structure
+
+```
+lib/
+├── main.dart           # Entry point
+└── src/
+├── app/                # Global app-level setup (providers, configs)
+├── app.dart            # Root widget
+├── core/               # Core infrastructure (not feature-specific)
+│ ├── routing/          # Navigation & route handling
+│ ├── services/         # API client(s), external integrations
+│ └── settings/         # App-wide settings controller
+├── features/           # Each feature follows MVVM layering
+│ ├── pokemon_list/     # Listing screen: View, ViewModel, Models
+│ └── pokemon_detail/   # Detail screen: View, ViewModel, Models
+└── shared/             # Reusable building blocks
+├── enums/              # Shared enums (e.g., Pokémon types)
+├── themes/             # Colors, text styles, design tokens
+├── utils.dart          # Small helpers
+└── widgets/            # Generic reusable widgets
+```
 
 ## Getting Started
 
-This project is a starting point for a Flutter application that follows the
-[simple app state management
-tutorial](https://flutter.dev/to/state-management-sample).
+### Prerequisites
+- Flutter SDK installed (`flutter --version`)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Run
+```bash
+flutter pub get
+flutter run
+```
 
-## Assets
+## Project Goals
+- Provide a clean Flutter baseline for consuming REST APIs.
+- Keep the UI focused and performant for a simple Pokédex experience.
+- Serve as a reference for list/detail navigation and simple search-by-name UX.
 
-The `assets` directory houses images, fonts, and any other files you want to
-include with your application.
+## Roadmap
+- Properly render branching evolution chains (e.g., Eeveelutions).
+- Add support for showing previous evolution(s) on the detail view.
+- Offline caching and basic theming improvements.
+  
+## Chores Needed to be Done
+- CI/CD to auto-release
+- Tests
 
-The `assets/images` directory contains [resolution-aware
-images](https://flutter.dev/to/resolution-aware-images).
+## Contributing
+**PRs are welcome**
 
-## Localization
+Please use semantic commits for your PRs and tell me Why, How, and What Changes your PR covers.
 
-This project generates localized messages based on arb files found in
-the `lib/src/localization` directory.
 
-To support additional languages, please visit the tutorial on
-[Internationalizing Flutter apps](https://flutter.dev/to/internationalization).
