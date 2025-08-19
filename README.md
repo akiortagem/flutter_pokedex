@@ -29,6 +29,8 @@ All data is retrieved from **PokeAPI**:
 
 - **Eeveelutions not handled**: the UI may display them as a single long chain (branching not yet rendered).
 - **Forward-only evolutions**: evolutions are shown from the **current Pokémon to the next one(s)** and **do not** include prior forms in the chain.
+- **Stats gage percentage**: there's some debates amongst fans on how to properly present base stats. Certainly it's not just `stats/255`. The best input from a pokefan that this project currently use is to pick the highest stat and add some padding. The colors, as suggested by the fan, shows the two (or more) lowest stats.
+- **Giratina**: The data on this pokemon is all kinds of messed up. So it might not render correctly
 
 ---
 

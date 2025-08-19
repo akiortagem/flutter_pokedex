@@ -75,7 +75,7 @@ class _PokemonDetailPageState extends State<PokemonDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          (data.pkmnName ?? 'Unknown').capitalise,
+                          (data.pkmnName ?? 'Unknown').dashToCapitalized,
                           style: PKMNText.title.textLight,
                         ),
                         const SizedBox(

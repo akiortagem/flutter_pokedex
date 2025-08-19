@@ -12,6 +12,7 @@ class PokemonDetailPageModel {
     this.pkmnAbout,
     this.pkmnBaseStats,
     this.pkmnMoves,
+    this.pkmnSpeciesName,
   });
 
   final List<PKMNTypes>? pkmnTypes;
@@ -21,4 +22,5 @@ class PokemonDetailPageModel {
   final PokemonDetailAboutModel? pkmnAbout;
   final PokemonDetailBaseStatsModel? pkmnBaseStats;
   final List<PKMNMoveModel>? pkmnMoves;
+  final String? pkmnSpeciesName;
 }

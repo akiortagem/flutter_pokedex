@@ -72,6 +72,14 @@ class PKMNDetailsPokeAPIDataSource implements PKMNDetailsDataSource {
     final id = response['id'] as int?;
     final name = response['name'] as String?;
 
+    // -- Species
+    final species = response['species'] as Map<String, dynamic>? ??
+        {
+          'name': '',
+        };
+
+    final speciesName = species['name'] ?? 'Unknown';
+
     // --- Types
     final types = (response['types'] as List<dynamic>?)
         ?.map((t) => mapTypeNameToEnum(t['type']['name'] as String))
@@ -149,6 +157,7 @@ class PKMNDetailsPokeAPIDataSource implements PKMNDetailsDataSource {
       pkmnAbout: about,
       pkmnBaseStats: baseStats,
       pkmnMoves: moves,
+      pkmnSpeciesName: speciesName,
     );
   }
 

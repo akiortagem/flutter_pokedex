@@ -167,7 +167,7 @@ class _PKMNEvoPic extends StatelessWidget {
           height: 4,
         ),
         Text(
-          pkmnName ?? 'Unknown',
+          (pkmnName ?? 'Unknown').dashToCapitalized,
           style: PKMNText.subtitle,
         )
       ],

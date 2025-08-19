@@ -17,6 +17,24 @@ class PKMNDetailBaseStatsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final allStats = [
+      pkmnBaseStats.attack,
+      pkmnBaseStats.hp,
+      pkmnBaseStats.defense,
+      pkmnBaseStats.spAtk,
+      pkmnBaseStats.spDef,
+      pkmnBaseStats.speed
+    ]..sort();
+    final baseMax = allStats.last ?? 100;
+
+    // Picks second lowest and add 1 pad
+    // If all stat is the same, use that as threshold (Arceus)
+    final redThreshold = allStats.toSet().length <= 1
+        ? (allStats[0] ?? 0)
+        : ((allStats.sublist(0, 2).last ?? 0) + 1);
+
+    final max = baseMax >= statMaxLimit ? statMaxLimit : baseMax + 10;
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -26,31 +44,55 @@ class PKMNDetailBaseStatsTab extends StatelessWidget {
           _PKMNIntGageDataEntry(
             label: 'HP',
             data: pkmnBaseStats.hp,
+            max: max,
+            color: (pkmnBaseStats.hp ?? 0) < redThreshold
+                ? PKMNColors.pokedexRed
+                : PKMNColors.pokedexGreen,
           ),
           const SizedBox(height: 16),
           _PKMNIntGageDataEntry(
             label: 'Attack',
             data: pkmnBaseStats.attack,
+            max: max,
+            color: (pkmnBaseStats.attack ?? 0) < redThreshold
+                ? PKMNColors.pokedexRed
+                : PKMNColors.pokedexGreen,
           ),
           const SizedBox(height: 16),
           _PKMNIntGageDataEntry(
             label: 'Defense',
             data: pkmnBaseStats.defense,
+            max: max,
+            color: (pkmnBaseStats.defense ?? 0) < redThreshold
+                ? PKMNColors.pokedexRed
+                : PKMNColors.pokedexGreen,
           ),
           const SizedBox(height: 16),
           _PKMNIntGageDataEntry(
             label: 'Sp. Atk',
             data: pkmnBaseStats.spAtk,
+            max: max,
+            color: (pkmnBaseStats.spAtk ?? 0) < redThreshold
+                ? PKMNColors.pokedexRed
+                : PKMNColors.pokedexGreen,
           ),
           const SizedBox(height: 16),
           _PKMNIntGageDataEntry(
             label: 'Sp. Def',
             data: pkmnBaseStats.spDef,
+            max: max,
+            color: (pkmnBaseStats.spDef ?? 0) < redThreshold
+                ? PKMNColors.pokedexRed
+                : PKMNColors.pokedexGreen,
           ),
           const SizedBox(height: 16),
           _PKMNIntGageDataEntry(
             label: 'Speed',
             data: pkmnBaseStats.speed,
+            max: max,
+            color: (pkmnBaseStats.speed ?? 0) < redThreshold
+                ? PKMNColors.pokedexRed
+                : PKMNColors.pokedexGreen,
           ),
         ],
       ),
@@ -63,11 +105,13 @@ class _PKMNIntGageDataEntry extends StatelessWidget {
     required this.label,
     this.data,
     this.max, //  keep this around so I can override it later
+    this.color,
   });
 
   final String label;
   final int? data;
   final int? max;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -110,9 +154,10 @@ class _PKMNIntGageDataEntry extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     widthFactor: ratio.toDouble(),
                     child: Container(
-                      color: ratio > 0.5
-                          ? PKMNColors.pokedexGreen
-                          : PKMNColors.pokedexRed,
+                      color: color ??
+                          (ratio > 0.5
+                              ? PKMNColors.pokedexGreen
+                              : PKMNColors.pokedexRed),
                     ),
                   ),
                 ],
