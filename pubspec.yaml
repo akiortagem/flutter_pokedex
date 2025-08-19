@@ -1,10 +1,10 @@
 name: flutter_pokedex
-description: "A new Flutter project."
+description: "PokeAPI client built with flutter"
 
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 0.0.1+1
 
 environment:
   sdk: ^3.5.4
